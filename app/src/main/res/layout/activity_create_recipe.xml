@@ -221,7 +221,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="16dp">
+                android:paddingBottom="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -255,10 +255,11 @@
                     </LinearLayout>
 
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/addIngredientButton"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:background="@drawable/rounded_button_background"
-                        android:layout_margin="5dp"
+                        android:layout_marginTop="5dp"
                         android:text="+"/>
 
                 </LinearLayout>
@@ -304,6 +305,7 @@
                     </LinearLayout>
 
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/addDirectionButton"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:background="@drawable/rounded_button_background"

@@ -27,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        Intent intent = new Intent(this, CreateRecipe.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, Login.class);
+//        startActivity(intent);
 
         // Initialize RecyclerView
         recipeRecyclerView = findViewById(R.id.recipeRecyclerView);
