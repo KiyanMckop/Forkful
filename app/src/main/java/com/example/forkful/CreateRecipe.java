@@ -121,7 +121,16 @@ public class CreateRecipe extends AppCompatActivity {
     }
 
     private void clearFields(){
-        System.out.println("clearing fields");
+        edtRecipeName.setText("");
+        edtRecipeDescription.setText("");
+        spRecipeCategory.setSelection(0);
+        dialogDuration.setText("");
+        dialogPeople.setText("");
+        dialogCalories.setText("");
+        dialogDifficulty.setSelection(0);
+
+        llIngredients.removeAllViews();
+        llDirections.removeAllViews();
     }
 
     public void saveRecipe(){
@@ -180,8 +189,9 @@ public class CreateRecipe extends AppCompatActivity {
         db.collection("recipes")
                 .add(recipeData) //unique id
                 .addOnSuccessListener(documentReference -> {
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
+//                    Intent intent = new Intent(this, MainActivity.class);
+//                    startActivity(intent);
+                    clearFields();
                     System.out.println("Recipe saved successfully with ID: " + documentReference.getId());
                 })
                 .addOnFailureListener(e -> {

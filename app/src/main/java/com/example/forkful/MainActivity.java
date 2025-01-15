@@ -1,18 +1,29 @@
 package com.example.forkful;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.forkful.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +31,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recipeRecyclerView;
-    private BottomNavigationView bottomNavigationView;
+    public BottomNavigationView navigationBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +39,9 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        Intent intent = new Intent(this, CreateRecipe.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, CreateRecipe.class);
+//        startActivity(intent);
+
 
         // Initialize RecyclerView
         recipeRecyclerView = findViewById(R.id.recipeRecyclerView);
@@ -44,12 +56,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 // Initialize Bottom Navigation
-        bottomNavigationView = findViewById(R.id.navigationBar);
-
-//         Updated Listener for BottomNavigationView
-//        bottomNavigationView.setOnItemSelectedListener(menuItem -> {
+//        navigationBar = findViewById(R.id.navigationBar);
+//
+//         //Updated Listener for BottomNavigationView
+//        navigationBar.setOnItemSelectedListener(menuItem -> {
 //            switch (menuItem.getItemId()) {
-//                case navigation_home:
+//                case R.id.navigation_home:
 //                    // Handle Home action
 //                    // For example: display a Home fragment
 //                    return true;
@@ -85,21 +97,47 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Set up RecyclerView with adapter
-        List<Recipe> recipeList = new ArrayList<>();
-        ArrayList<String> ingredients = new ArrayList<>();
-        ArrayList<String> directions = new ArrayList<>();
 
-        ingredients.add("Ingredient 1");
-        ingredients.add("Ingredient 2");
-        directions.add("Direction 1");
-        directions.add("Direction 2");
+        // get recipes from Firestore
+        // add recipes to recipe adapter
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        recipeList.add(new Recipe("Recipe 1",
-                "A delicious sandwich with layers of fresh ingredients.",
-                "image_url_1","Breakfast", 1, 4, 1000,
-                "Easy", ingredients, directions));// Sample data
-        RecipeAdapter recipeAdapter = new RecipeAdapter(recipeList, this);
-        recipeRecyclerView.setAdapter(recipeAdapter);
+        db.collection("recipes")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        ArrayList<Recipe> recipeList = new ArrayList<>();
+
+                        for (DocumentSnapshot document : task.getResult()) {
+                            if (document.exists()) {
+                                // Map document to a Recipe object
+                                Recipe recipe = new Recipe();
+                                recipe.setName(document.getString("name"));
+                                recipe.setDescription(document.getString("description"));
+                                recipe.setCategory(document.getString("category"));
+                                recipe.setDuration(Integer.parseInt(document.getString("duration")));
+                                recipe.setServingSize(Integer.parseInt(document.getString("servingSize")));
+                                recipe.setCalories(Integer.parseInt(document.getString("calories")));
+                                recipe.setDifficulty(document.getString("difficulty"));
+
+                                // Retrieve lists for ingredients and directions
+                                ArrayList<String> ingredients = (ArrayList<String>) document.get("ingredients");
+                                ArrayList<String> directions = (ArrayList<String>) document.get("directions");
+
+                                recipe.setIngredients(ingredients != null ? ingredients : new ArrayList<>());
+                                recipe.setDirections(directions != null ? directions : new ArrayList<>());
+
+                                recipeList.add(recipe);
+                            }
+                        }
+
+                        // populate the adapter with the list of recipes
+                        RecipeAdapter recipeAdapter = new RecipeAdapter(recipeList, this);
+                        recipeRecyclerView.setAdapter(recipeAdapter);
+                    } else {
+                        Log.e("Firestore", "Error fetching recipes", task.getException());
+                    }
+                });
+
     }
 }

@@ -17,6 +17,10 @@ public class Recipe {
 
     private ArrayList<String> directions;
 
+    public Recipe(){
+
+    }
+
     // Constructor, getters and setters
     public Recipe(String name, String description, String imageUrl, String category, int duration,
                   int servingSize, int calories, String difficulty, ArrayList<String> ingredients,
