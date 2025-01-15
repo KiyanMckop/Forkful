@@ -1,5 +1,6 @@
 package com.example.forkful;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,17 +10,26 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.w3c.dom.Node;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateRecipe extends AppCompatActivity {
 
+    //dialog variables
     EditText dialogDuration, dialogPeople, dialogCalories;
-    Spinner dialogDifficulty, createCategories;
+
+    //recipe variables
+    EditText edtRecipeName, edtRecipeDescription;
+    Spinner dialogDifficulty, spRecipeCategory;
     Button cancel, done, btnCancelRecipe, btnSaveRecipe, btnAddDirection, btnAddIngredient;
 
     ImageButton ibDuration, ibServing, ibCalories, ibDifficulty;
@@ -75,7 +85,7 @@ public class CreateRecipe extends AppCompatActivity {
             //handle storing all content to variables
         });
 
-        createCategories = findViewById(R.id.createCategories);
+        spRecipeCategory = findViewById(R.id.spRecipeCategory);
 
         String[] foodCategories = {"Breakfast", "Lunch", "Dinner", "Dessert", "Snack", "Beverage"};
 
@@ -84,8 +94,12 @@ public class CreateRecipe extends AppCompatActivity {
                 android.R.layout.simple_spinner_item,
                 foodCategories);
         foodCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        createCategories.setAdapter(foodCategoryAdapter);
+        spRecipeCategory.setAdapter(foodCategoryAdapter);
 
+
+        //general components
+        edtRecipeName = findViewById(R.id.edtRecipeTitle);
+        edtRecipeDescription = findViewById(R.id.edtRecipeDescription);
 
         //handle saving and canceling recipes
         btnCancelRecipe = findViewById(R.id.btnCancelRecipe);
@@ -110,13 +124,105 @@ public class CreateRecipe extends AppCompatActivity {
         System.out.println("clearing fields");
     }
 
-    private void saveRecipe(){
-        System.out.println("save");
+    public void saveRecipe(){
+        if (!validateInputs()){
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        //handle storing all content to firebase storage
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Create a Map to store the recipe data
+        Map<String, Object> recipeData = new HashMap<>();
+
+        // store recipe component values to variables
+        String recipeName = edtRecipeName.getText().toString();
+        String recipeDescription = edtRecipeDescription.getText().toString();
+        String recipeCategory = spRecipeCategory.getSelectedItem().toString();
+        String recipeDuration = dialogDuration.getText().toString();
+        String recipeServingSize = dialogPeople.getText().toString();
+        String recipeCalories = dialogCalories.getText().toString();
+        String recipeDifficulty = dialogDifficulty.getSelectedItem().toString();
+
+        //add the recipe info to the map
+        recipeData.put("name", recipeName);
+        recipeData.put("description", recipeDescription);
+        recipeData.put("category", recipeCategory);
+        recipeData.put("duration", recipeDuration);
+        recipeData.put("servingSize", recipeServingSize);
+        recipeData.put("calories", recipeCalories);
+        recipeData.put("difficulty", recipeDifficulty);
+
+        // get ingredients and directions from dynamically created EditTexts
+        ArrayList<String> ingredients = new ArrayList<>();
+        for (int i = 0; i < llIngredients.getChildCount(); i++) {
+            EditText ingredientEditText = (EditText) llIngredients.getChildAt(i);
+            String ingredient = ingredientEditText.getText().toString();
+            if (!ingredient.isEmpty()) {
+                ingredients.add(ingredient);
+            }
+        }
+
+        ArrayList<String> directions = new ArrayList<>();
+        for (int i = 0; i < llDirections.getChildCount(); i++) {
+            EditText directionEditText = (EditText) llDirections.getChildAt(i);
+            String direction = directionEditText.getText().toString();
+            if (!direction.isEmpty()) {
+                directions.add(direction);
+            }
+        }
+
+        //add ingredients and directions to the map
+        recipeData.put("ingredients", ingredients);
+        recipeData.put("directions", directions);
+
+        //add recipe to firestore (uses unique id)
+        db.collection("recipes")
+                .add(recipeData) //unique id
+                .addOnSuccessListener(documentReference -> {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                    System.out.println("Recipe saved successfully with ID: " + documentReference.getId());
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error saving recipe", Toast.LENGTH_SHORT).show();
+                    System.err.println("Error saving recipe: " + e.getMessage());
+                });
+    }
+
+    private boolean validateInputs(){
+
+        //validate dialog inputs
+        if (dialogDuration.getText().toString().isEmpty() ||
+            dialogPeople.getText().toString().isEmpty() ||
+            dialogCalories.getText().toString().isEmpty() ||
+            dialogDifficulty.getSelectedItem().toString().isEmpty()){
+            return false;
+        }
+
+        //validate editText inputs
+        if (edtRecipeDescription.getText().toString().isEmpty() ||
+            edtRecipeName.getText().toString().isEmpty()){
+            return false;
+        }
+
+        //validate spinner inputs
+        if (spRecipeCategory.getSelectedItem().toString().isEmpty()){
+            return false;
+        }
+
+        //validate list inputs
+        if (llIngredients.getChildCount() == 0 || llDirections.getChildCount() == 0){
+            return false;
+        }
+
+        return true;
+
     }
 
     private void createListComponent(LinearLayout parent, String hintTag){
+
+        //create a new list component for the ingredients and directions sections
 
         EditText edtTextComponent = new EditText(this);
         edtTextComponent.setHint(hintTag + " " + (parent.getChildCount() + 1));

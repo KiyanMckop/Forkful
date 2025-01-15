@@ -33,13 +33,14 @@ android {
 }
 
 dependencies {
-
+    implementation (libs.firebase.bom)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.auth)
-    implementation("com.firebaseui:firebase-ui-auth:8.0.2")
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.ui.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
