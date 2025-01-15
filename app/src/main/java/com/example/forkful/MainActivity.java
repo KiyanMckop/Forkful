@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.forkful.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-//        Intent intent = new Intent(this, Login.class);
-//        startActivity(intent);
+        Intent intent = new Intent(this, CreateRecipe.class);
+        startActivity(intent);
 
         // Initialize RecyclerView
         recipeRecyclerView = findViewById(R.id.recipeRecyclerView);
@@ -45,10 +46,10 @@ public class MainActivity extends AppCompatActivity {
 // Initialize Bottom Navigation
         bottomNavigationView = findViewById(R.id.navigationBar);
 
-        // Updated Listener for BottomNavigationView
+//         Updated Listener for BottomNavigationView
 //        bottomNavigationView.setOnItemSelectedListener(menuItem -> {
 //            switch (menuItem.getItemId()) {
-//                case R.id.navigation_home:
+//                case navigation_home:
 //                    // Handle Home action
 //                    // For example: display a Home fragment
 //                    return true;
@@ -86,10 +87,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up RecyclerView with adapter
         List<Recipe> recipeList = new ArrayList<>();
-        recipeList.add(new Recipe("Recipe 1", "A delicious sandwich with layers of fresh ingredients.", "image_url_1"));
-        recipeList.add(new Recipe("Recipe 2", "A delicious sandwich with layers of fresh ingredients.", "image_url_2"));
-        recipeList.add(new Recipe("Recipe 3", "A delicious sandwich with layers of fresh ingredients.", "image_url_3"));
-        recipeList.add(new Recipe("Recipe 4", "A delicious sandwich with layers of fresh ingredients.", "image_url_4")); // Sample data
+        ArrayList<String> ingredients = new ArrayList<>();
+        ArrayList<String> directions = new ArrayList<>();
+
+        ingredients.add("Ingredient 1");
+        ingredients.add("Ingredient 2");
+        directions.add("Direction 1");
+        directions.add("Direction 2");
+
+        recipeList.add(new Recipe("Recipe 1",
+                "A delicious sandwich with layers of fresh ingredients.",
+                "image_url_1","Breakfast", 1, 4, 1000,
+                "Easy", ingredients, directions));// Sample data
         RecipeAdapter recipeAdapter = new RecipeAdapter(recipeList, this);
         recipeRecyclerView.setAdapter(recipeAdapter);
     }

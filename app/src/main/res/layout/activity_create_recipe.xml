@@ -47,7 +47,7 @@
         android:id="@+id/body"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/footer"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header"
@@ -249,7 +249,7 @@
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Ingredient 0"
+                            android:hint="Ingredient 1"
                             android:background="@drawable/edit_background"/>
 
                     </LinearLayout>
@@ -299,7 +299,7 @@
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Ingredient 0"
+                            android:hint="Step 1"
                             android:background="@drawable/edit_background"/>
 
                     </LinearLayout>
@@ -316,11 +316,77 @@
 
             </LinearLayout>
 
+            <!-- Description -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="16dp">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="Description"
+                    android:textColor="@color/text_color"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="20dp"
+                    android:hint="Description"
+                    android:background="@drawable/edit_background"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCancelRecipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background"
+            android:text="Cancel"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSaveRecipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background"
+            android:text="Save"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

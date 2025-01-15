@@ -41,13 +41,13 @@ public class Login extends AppCompatActivity {
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
-        // Auto-login check
-        FirebaseUser currentUser = auth.getCurrentUser();
-        if (currentUser != null) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
+//        // Auto-login check
+//        FirebaseUser currentUser = auth.getCurrentUser();
+//        if (currentUser != null) {
+//            Intent intent = new Intent(this, MainActivity.class);
+//            startActivity(intent);
+//            finish();
+//        }
 
         loginButton.setOnClickListener(v -> {
             String email = loginEmail.getText().toString().trim();

@@ -7,19 +7,24 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.w3c.dom.Node;
+
 public class CreateRecipe extends AppCompatActivity {
 
     EditText dialogDuration, dialogPeople, dialogCalories;
     Spinner dialogDifficulty, createCategories;
-    Button cancel, done;
+    Button cancel, done, btnCancelRecipe, btnSaveRecipe, btnAddDirection, btnAddIngredient;
 
     ImageButton ibDuration, ibServing, ibCalories, ibDifficulty;
+
+    LinearLayout llIngredients, llDirections;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +85,50 @@ public class CreateRecipe extends AppCompatActivity {
                 foodCategories);
         foodCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         createCategories.setAdapter(foodCategoryAdapter);
+
+
+        //handle saving and canceling recipes
+        btnCancelRecipe = findViewById(R.id.btnCancelRecipe);
+        btnCancelRecipe.setOnClickListener(view -> clearFields());
+
+        btnSaveRecipe = findViewById(R.id.btnSaveRecipe);
+        btnSaveRecipe.setOnClickListener(view -> saveRecipe());
+
+        //handle adding ingredients and direction components
+        llIngredients = findViewById(R.id.ingredientContainer);
+        llDirections = findViewById(R.id.directionsContainer);
+
+        btnAddDirection = findViewById(R.id.addDirectionButton);
+        btnAddDirection.setOnClickListener(view -> createListComponent(llDirections, "Step"));
+
+        btnAddIngredient = findViewById(R.id.addIngredientButton);
+        btnAddIngredient.setOnClickListener(view -> createListComponent(llIngredients, "Ingredient"));
+
+    }
+
+    private void clearFields(){
+        System.out.println("clearing fields");
+    }
+
+    private void saveRecipe(){
+        System.out.println("save");
+
+        //handle storing all content to firebase storage
+    }
+
+    private void createListComponent(LinearLayout parent, String hintTag){
+
+        EditText edtTextComponent = new EditText(this);
+        edtTextComponent.setHint(hintTag + " " + (parent.getChildCount() + 1));
+        edtTextComponent.setBackgroundResource(R.drawable.edit_background);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 20, 0, 20);
+        edtTextComponent.setLayoutParams(params);
+
+        parent.addView(edtTextComponent);
 
     }
 }

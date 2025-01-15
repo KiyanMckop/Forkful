@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
@@ -43,6 +45,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             intent.putExtra("recipe_description", recipe.getDescription());
             intent.putExtra("recipe_image", recipe.getImageUrl());
             intent.putExtra("is_favorite", holder.isFavorite);
+            intent.putExtra("recipe_duration", recipe.getDuration());
+            intent.putExtra("recipe_serving_size", recipe.getServingSize());
+            intent.putExtra("recipe_calories", recipe.getCalories());
+            intent.putExtra("recipe_difficulty", recipe.getDifficulty());
+
+            ArrayList<String> ingredients = recipe.getIngredients();
+            ArrayList<String> directions = recipe.getDirections();
+//
+            intent.putStringArrayListExtra("recipe_ingredients", ingredients);
+            intent.putStringArrayListExtra("recipe_ingredients", directions);
             context.startActivity(intent);
         });
     }
@@ -53,8 +65,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     public static class RecipeViewHolder extends RecyclerView.ViewHolder {
-        TextView recipeName;
-        TextView recipeDescription;
+        TextView recipeName, recipeDescription, recipeDuration, recipeServingSize, recipeCalories, recipeDifficulty;
         ImageView recipeImage, recipeFavorite;
         boolean isFavorite = false;
 
@@ -65,6 +76,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             recipeDescription = itemView.findViewById(R.id.recipeDescription);
             recipeFavorite = itemView.findViewById(R.id.recipeFavorite);
             recipeFavorite.setOnClickListener(v -> toggleFavorite());
+            recipeDuration = itemView.findViewById(R.id.recipeDuration);
+            recipeServingSize = itemView.findViewById(R.id.recipeServingSize);
+            recipeCalories = itemView.findViewById(R.id.recipeCalories);
+            recipeDifficulty = itemView.findViewById(R.id.recipeDifficulty);
         }
 
         private void toggleFavorite() {
