@@ -54,7 +54,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             ArrayList<String> directions = recipe.getDirections();
 //
             intent.putStringArrayListExtra("recipe_ingredients", ingredients);
-            intent.putStringArrayListExtra("recipe_ingredients", directions);
+            intent.putStringArrayListExtra("recipe_directions", directions);
             context.startActivity(intent);
         });
     }

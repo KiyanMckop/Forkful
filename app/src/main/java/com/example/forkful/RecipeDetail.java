@@ -53,13 +53,6 @@ public class RecipeDetail extends AppCompatActivity {
         ArrayList<String> ingredients = intent.getStringArrayListExtra("recipe_ingredients");
         ArrayList<String> directions = intent.getStringArrayListExtra("recipe_directions");
 
-        for (String ingredient : ingredients) {
-            recipeIngredients.append("&#8226;" + ingredient + "\n");
-        }
-        for (String direction : directions) {
-            recipeDirections.append("&#8226;" + direction + "\n");
-        }
-
 
         // Set the data to the views
         recipeTitle.setText(name);
@@ -69,6 +62,16 @@ public class RecipeDetail extends AppCompatActivity {
         recipeCalories.setText(calories);
         recipeDifficulty.setText(difficulty);
         toggleFavorite(isFavorite);
+
+        recipeIngredients.setText("");
+        for (String ingredient : ingredients) {
+            recipeIngredients.append("• " + ingredient + "\n");
+        }
+        recipeDirections.setText("");
+        for (String direction : directions) {
+            recipeDirections.append("• " + direction + "\n");
+        }
+
 
         // Use Glide or any image loading library to load the image
 //        Glide.with(this)
